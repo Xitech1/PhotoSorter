@@ -48,14 +48,22 @@ public class PhotoSorter
             using (FileStream fs = new FileStream(item, FileMode.Open, FileAccess.Read))
             using (Image myImage = Image.FromStream(fs, false, false))
             {
-                PropertyItem propItem = myImage.GetPropertyItem(36867);
-                string dateTaken = r.Replace(Encoding.UTF8.GetString(propItem.Value), "-", 2);
-                DateTime taken = DateTime.Parse(dateTaken);
-
-                if(taken > date)
+                try
                 {
-                    myImage.Save(directory + sortedDirectoryName + Path.GetFileName(item));
+                    PropertyItem propItem = myImage.GetPropertyItem(36867);
+                    string dateTaken = r.Replace(Encoding.UTF8.GetString(propItem.Value), "-", 2);
+                    DateTime taken = DateTime.Parse(dateTaken);
+
+                    if (taken > date)
+                    {
+                        myImage.Save(directory + sortedDirectoryName + Path.GetFileName(item));
+                    }
                 }
+                catch (Exception)
+                {
+                    Console.WriteLine("PropertyItem not found - skipping");
+                }
+               
             }
         }
     }
